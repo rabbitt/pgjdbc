@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.SocketTimeoutException;
 
 /**
  * Wrapper around a length-limited InputStream.
@@ -129,6 +130,9 @@ public class StreamWrapper {
         this.offset = 0;
         this.length = rawData.length;
       }
+    } catch (SocketTimeoutException e) {
+      throw new PSQLException(GT.tr("The socket timed out while reading from the backend."),
+          PSQLState.IO_ERROR, e);
     } catch (IOException e) {
       throw new PSQLException(GT.tr("An I/O error occurred while sending to the backend."),
           PSQLState.IO_ERROR, e);
